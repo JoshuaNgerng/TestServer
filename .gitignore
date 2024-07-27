@@ -1,6 +1,5 @@
 node_modules/*
 *lock
-*js
 test_files/*
 *txt
 .vercel

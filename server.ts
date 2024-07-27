@@ -71,7 +71,7 @@ app.post('/download', upload.none(), async (req : Request, res: Response) => {
 	if (fileType < 0) {
 		return (res.status(404).send('Unknown File received from ipfs'));
 	}
-	const extension = ["JPG", "PNG", "pdf"];
+	const extension = ["zip", "JPG", "PNG", "pdf"];
 	const path = join(launchdir + '/test/' + req.body.filename + "." + extension[fileType]);
 	writeLocalFile(info[0], path);
 	res.status(info[1]).send(info[2]);
