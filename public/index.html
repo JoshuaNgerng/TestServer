@@ -1,9 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <link rel="stylesheet" href="Style/style.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
 
     <link
       rel="stylesheet"
@@ -20,19 +25,19 @@
     <title>VeriChain</title>
   </head>
   <body>
-    <header>
-      <div class="navbar">
-        <div class="logo">
-          <a href="#"><img src="Style/img/VeriChainLogo.png" /> </a>
-        </div>
+      <header>
+          <div class="navbar">
+              <div class="logo">
+                  <a href="index.html"><img src="Style/img/VeriChainLogo.png" /> </a>
+                </div>
         <ul>
           <li class="links">
             <a href="#">Home</a>
             <a href="about.html">About</a>
             <a href="#" class="services"
-              >Services
+            >Services
               <span class="material-symbols-outlined">
-                keyboard_arrow_down
+                  keyboard_arrow_down
               </span></a
             >
             <a href="#">Pricing</a>
@@ -40,7 +45,7 @@
           </li>
         </ul>
         <div class="action_btn">
-          <a href="/upload" class="buttons1">Upload Files</a>
+          <a href="upload_files.html" class="buttons1">Upload Files</a>
           <a href="#" class="buttons2">Register</a>
         </div>
 
@@ -66,18 +71,69 @@
                 search
               </span>
             </td>
-            <td>
-              <input
-                type="text"
-                id="input_id"
-                placeholder="Search Credentials"
-                class="search"
-              />
-            </td>
-            <td>
-              <button type="submit" class="searchsubmit" onclick="verifyFromServer()">Search</button>
-            </td>
+            <form id="my-form">
+              <td>
+                <input
+                  type="text"
+                  placeholder="Search Credentials"
+                  class="search"
+                  name="hash-input"
+                  id="input_id"
+                />
+              </td>
+              <td>
+                <button
+                  type="submit"
+                  class="searchsubmit"
+                  onclick="verifyFromServer()"
+                >
+                  Search
+                </button>
+              </td>
+            </form>
           </tr>
+        </table>
+      </div>
+
+      <div class="dropdown-results" id="no_match">
+        <table class="results-table">
+          <tbody class="results-body">
+            <tr>
+              <th>No credentials found</th>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="dropdown-results" id="match_found">
+        <table class="results-table">
+          <thead class="results-header">
+            <tr>
+              <th>File Name</th>
+              <th>Date of Issue</th>
+              <th>Issuer</th>
+            </tr>
+          </thead>
+          <tbody class="results-body">
+            <tr>
+              <th id="myHash"></th>
+              <button style="cursor: pointer" id="downloadfile">
+                <span
+                  class="material-symbols-outlined"
+                  id="downloadfile"
+                  style="
+                    color: black;
+                    position: absolute;
+                    transform: translate(338px, 67px);
+                  "
+                >
+                  download
+                </span>
+              </button>
+              <th id="myDate"></th>
+              <th>Sunway University</th>
+            </tr>
+          </tbody>
         </table>
       </div>
       <div style="text-align: right">
@@ -85,8 +141,8 @@
       </div>
     </main>
     <hr
-      style="
-        border-top: solid 1px #fff;
+    style="
+        border: solid 1px #8c87a644;
         margin-top: 100px;
         margin-left: 100px;
         margin-right: 100px;
@@ -99,7 +155,7 @@
             src="Style/img/VeriChain-black-font-1.png"
             style="width: 200px; height: 85px; margin-bottom: 25px"
             class="logo"
-          />
+            />
           <p style="color: #8c87a6; font-weight: 700">
             Where Validity is Guaranteed
           </p>
@@ -128,9 +184,9 @@
           </a>
         </div>
       </div>
-      <div style="border-top: solid 2px #e1dfec; margin: 50px 100px">
+      <div style="border-top: solid 1px #8c87a644; margin: 50px 100px">
         <p
-          style="
+        style="
             margin-left: 10%;
             margin-top: 40px;
             color: #8c87a6;
@@ -142,19 +198,5 @@
       </div>
     </footer>
   </body>
-  <script>
-    async function verifyFromServer() {
-        let id = document.getElementById("input_id").value;
-        if (!id)
-            return ;
-        const formData = new FormData();
-        formData.append('filename', id);
-        const response = await fetch('/download', {
-            method: 'POST',
-            body: formData
-        });
-        const result = await response.text();
-        alert(result);
-    }
-  </script>
+  <script src="verify.js" type="module"></script>
 </html>

@@ -5,15 +5,15 @@ import { fileURLToPath } from 'url'
 import { Helia } from 'helia'
 import { UnixFS, unixfs } from '@helia/unixfs'
 import { CID } from 'multiformats/cid'
-import { startHelia, uploadToIPFS, getFileFromIPFS, logLibp2pInfo } from './ipfs.js'
-import { logtext, writeLocalFile } from './local.js'
-import { checkFileType } from './validator.js'
+import { startHelia, uploadToIPFS, getFileFromIPFS, logLibp2pInfo } from './src/ipfs.js'
+import { logtext, writeLocalFile } from './src/local.js'
+import { checkFileType } from './src/validator.js'
 
 // setup for server
 const app: Express = express();
 const upload: Multer = multer({ storage: multer.memoryStorage() })
 const port: number = 6969;
-const launchdir: string = join(dirname(fileURLToPath(import.meta.url)) + '/../public');
+const launchdir: string = join(dirname(fileURLToPath(import.meta.url)) + '/public');
 
 // start helia for ipfs connection
 const helia: Helia = await startHelia();
@@ -46,8 +46,14 @@ app.post('/upload', upload.any(), async (req: Request, res: Response) => {
 			continue ;
 		}
 		const cid: CID = await uploadToIPFS(fs, file.buffer);
-		logtext(`Added file '${file.originalname}' as ${cid.toString()}`, logfile);
-	}
+		const currentDate = new Date().toISOString().split("T")[0];
+		logtext(
+			`export let ${cid.toString()} = "${file.originalname
+			.replace(/\.[^/.]+$/, "") // Remove the file extension
+			.replace(/[^a-zA-Z]/g, "")}";
+			export let ${cid.toString()}date = "${currentDate}";`,
+			logfile);
+		}
 	if (check == false)
 		return (res.status(404).send(`Some Files have unideftiable format`));
 	res.status(201).send(`All files sucessfully added`);// ${req.file.originalname}  cid: ${cid.toString()}`);
