@@ -5,15 +5,15 @@ import { fileURLToPath } from 'url'
 import { Helia } from 'helia'
 import { UnixFS, unixfs } from '@helia/unixfs'
 import { CID } from 'multiformats/cid'
-import { startHelia, uploadToIPFS, getFileFromIPFS, logLibp2pInfo } from './src/ipfs.js'
-import { logtext, writeLocalFile } from './src/local.js'
-import { checkFileType } from './src/validator.js'
+import { startHelia, uploadToIPFS, getFileFromIPFS, logLibp2pInfo } from './ipfs.js'
+import { logtext, writeLocalFile } from './local.js'
+import { checkFileType } from './validator.js'
 
 // setup for server
 const app: Express = express();
 const upload: Multer = multer({ storage: multer.memoryStorage() })
 const port: number = 6969;
-const launchdir: string = join(dirname(fileURLToPath(import.meta.url)));
+const launchdir: string = join(dirname(fileURLToPath(import.meta.url)) + '/../public');
 
 // start helia for ipfs connection
 const helia: Helia = await startHelia();
@@ -65,12 +65,14 @@ app.post('/download', upload.none(), async (req : Request, res: Response) => {
 	if (fileType < 0) {
 		return (res.status(404).send('Unknown File received from ipfs'));
 	}
-	const extension = ["JPG", "PNG", "pdf"]
-	writeLocalFile(info[0], join('test_files/' + req.body.filename + "." + extension[fileType]));
+	const extension = ["JPG", "PNG", "pdf"];
+	const path = join(launchdir + '/test/' + req.body.filename + "." + extension[fileType]);
+	writeLocalFile(info[0], path);
 	res.status(info[1]).send(info[2]);
 });
 
 app.use((req : Request, res : Response) => {
+	console.log(`Invalid request: ${req.method} ${req.originalUrl}`);
 	res.status(404).send(`<h1>Error 404: Request not found</h1>`);
 });
 
@@ -86,4 +88,4 @@ process.on('SIGINT', () => {
 	process.exit();
 });
 
-export default express
+export default app
