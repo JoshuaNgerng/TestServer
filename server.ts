@@ -85,3 +85,5 @@ process.on('SIGINT', () => {
 	helia.stop();
 	process.exit();
 });
+
+export default express
