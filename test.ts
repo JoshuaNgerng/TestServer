@@ -10,3 +10,4 @@ import { checkFileType } from './src/validator.js'
 // start helia for ipfs connection
 const helia: Helia = await startHelia();
 const fs: UnixFS = unixfs(helia);
+

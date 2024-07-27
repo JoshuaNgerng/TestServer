@@ -3,3 +3,4 @@ node_modules/*
 test_files/*
 *txt
 .vercel
+ex2.js server.js test.js

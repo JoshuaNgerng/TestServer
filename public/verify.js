@@ -1,4 +1,16 @@
-import * as log from "./log.js";
+"use strict";
+const noMatchDropdown = document.getElementById("no_match");
+const matchFoundDropdown = document.getElementById("match_found");
+function showDropdown(dropdown) {
+    if (!dropdown)
+        return;
+    dropdown.classList.add("show");
+}
+function hideDropdown(dropdown) {
+    if (!dropdown)
+        return;
+    dropdown.classList.remove("show");
+}
 async function verifyFromServer() {
     let id = document.getElementById("input_id").value;
     if (!id)
@@ -9,43 +21,26 @@ async function verifyFromServer() {
         method: 'POST',
         body: formData
     });
-    const result = await response.text();
-    // alert(result);
+    const result = await response.json();
+    if (!result) {
+        showDropdown(noMatchDropdown);
+        hideDropdown(matchFoundDropdown);
+        return;
+    }
+    updateHTML(result);
 }
-window.addEventListener("DOMContentLoaded", () => {
-    //   let testString = "12345";
-    //   let displayString = "Justin";
-    let formElement = document.getElementById("my-form");
-    const noMatchDropdown = document.getElementById("no_match");
-    const matchFoundDropdown = document.getElementById("match_found");
-    function showDropdown(dropdown) {
-        if (!dropdown)
-            return;
-        dropdown.classList.add("show");
-    }
-    function hideDropdown(dropdown) {
-        if (!dropdown)
-            return;
-        dropdown.classList.remove("show");
-    }
-    function dropdownHandler(str) {
-        console.log(str);
-        if (typeof log[str] != "undefined") {
-            document.getElementById("myHash").innerHTML = log[str];
-            document.getElementById("myDate").innerHTML = log[`${str}date`];
-            showDropdown(matchFoundDropdown);
-            hideDropdown(noMatchDropdown);
-        }
-        else {
-            showDropdown(noMatchDropdown);
-            hideDropdown(matchFoundDropdown);
-        }
-    }
-    formElement.addEventListener("submit", (event) => {
-        event.preventDefault();
-        let formEl = event.currentTarget;
-        let inputValue = formEl.elements["hash-input"].value.trim();
-        // console.log(inputValue);
-        dropdownHandler(inputValue);
-    });
-});
+function updateHTML(result) {
+    const downfile = document.getElementById("downloadfile");
+    document.getElementById("myHash").innerHTML = result[1];
+    document.getElementById("myDate").innerHTML = result[2];
+    showDropdown(matchFoundDropdown);
+    hideDropdown(noMatchDropdown);
+    const listItem = document.createElement('li');
+    listItem.textContent = result[1];
+    const downloadLink = document.createElement('a');
+    downloadLink.href = `/download/${result[1]}`;
+    downloadLink.textContent = 'Download';
+    downloadLink.style.marginLeft = '10px';
+    listItem.appendChild(downloadLink);
+    downfile.appendChild(listItem);
+}
