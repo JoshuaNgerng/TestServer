@@ -12,13 +12,13 @@ import { checkFileType } from './src/validator.js'
 // setup for server
 const app: Express = express();
 const upload: Multer = multer({ storage: multer.memoryStorage() })
-const port: number = 6969;
+const port: string = process.env.PORT || '6969';
 const launchdir: string = join(dirname(fileURLToPath(import.meta.url)) + '/public');
 
 // start helia for ipfs connection
 const helia: Helia = await startHelia();
 const fs: UnixFS = unixfs(helia);
-const logfile: string = 'log.txt';
+// const logfile: string = 'public/log.js';
 
 app.use('/', express.static(join(launchdir)));
 
@@ -29,10 +29,6 @@ app.get('/upload', (req: Request, res: Response) => {
 app.get('/about.html', (req: Request, res: Response) => {
 	res.sendFile(join(launchdir, '/about.html'));
 });
-
-// app.get('/issuer', (req: Request, res: Response) => {
-// 	res.sendFile(join(launchdir, '/issuer.html'));
-// });
 
 app.post('/upload', upload.any(), async (req: Request, res: Response) => {
 	if (!req.files || (req.files as Express.Multer.File[]).length === 0) {
@@ -52,7 +48,7 @@ app.post('/upload', upload.any(), async (req: Request, res: Response) => {
 			.replace(/\.[^/.]+$/, "") // Remove the file extension
 			.replace(/[^a-zA-Z]/g, "")}";
 			export let ${cid.toString()}date = "${currentDate}";`,
-			logfile);
+			"public/log.js");
 		}
 	if (check == false)
 		return (res.status(404).send(`Some Files have unideftiable format`));
@@ -71,21 +67,21 @@ app.post('/download', upload.none(), async (req : Request, res: Response) => {
 	if (fileType < 0) {
 		return (res.status(404).send('Unknown File received from ipfs'));
 	}
-	const extension = ["zip", "JPG", "PNG", "pdf"];
-	const path = join(launchdir + '/test/' + req.body.filename + "." + extension[fileType]);
-	writeLocalFile(info[0], path);
+	// const extension = ["zip", "JPG", "PNG", "pdf"];
+	// const path = join(launchdir + '/test/' + req.body.filename + "." + extension[fileType]);
+	// writeLocalFile(info[0], path);
 	res.status(info[1]).send(info[2]);
 });
 
 app.use((req : Request, res : Response) => {
-	console.log(`Invalid request: ${req.method} ${req.originalUrl}`);
+	// console.log(`Invalid request: ${req.method} ${req.originalUrl}`);
 	res.status(404).send(`<h1>Error 404: Request not found</h1>`);
 });
 
-app.listen(port, async() =>  {
+app.listen(parseInt(port), async() =>  {
 	console.log(`App is ready and listening on http://localhost:${port}`);
-	logtext('New server session', logfile);
-	logLibp2pInfo(helia, logfile);
+	// logtext('New server session', logfile);
+	// logLibp2pInfo(helia, logfile);
 });
 
 process.on('SIGINT', () => {
